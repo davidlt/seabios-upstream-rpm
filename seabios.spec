@@ -1,18 +1,17 @@
-%define githead 669c991
-
 Name:           seabios
 Version:        0.5.1
-Release:        0.1.20100108git%{githead}%{?dist}
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
 License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
-# Source0:        http://linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.gz
-# The source for this package was pulled from upstream's git.  Use the
-# following commands to generate the tarball:
-# git archive --format=tar --prefix=seabios-0.5.1/ 669c991 | gzip > seabios-0.5.1-669c991.tar.gz
-Source0:        %{name}-%{version}-%{githead}.tar.gz
+Source0:        http://linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.gz
+
+# Patches from git 0.5.1-stable branch
+Patch01: 0001-Go-back-to-using-0xf0000000-for-PCI-memory-start.patch
+Patch02: 0002-Fix-PkgLength-calculation-for-the-SSDT.patch
+
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: python
@@ -26,8 +25,12 @@ that a typical x86 proprietary BIOS implements.
 
 %prep
 %setup -q
-# Makefile on pre releases changes version to include date and buildhost
-sed -i 's,VERSION=pre-%{version}.*,VERSION=pre-%{version}-%{githead},g' Makefile
+
+%patch01 -p1
+%patch02 -p1
+
+# Makefile changes version to include date and buildhost
+sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
 
 
 %build
@@ -53,5 +56,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Mar 03 2010 Justin M. Forbes <jforbes@redhat.com> 0.5.1-1
+- Update to 0.5.1 stable release
+- Pick up patches required for current qemu
+
 * Thu Jan 07 2010 Justin M. Forbes <jforbes@redhat.com> 0.5.1-0.1.20100108git669c991
 - Created initial package

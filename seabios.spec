@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        0.5.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -11,6 +11,14 @@ Source0:        http://linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.gz
 # Patches from git 0.5.1-stable branch
 Patch01: 0001-Go-back-to-using-0xf0000000-for-PCI-memory-start.patch
 Patch02: 0002-Fix-PkgLength-calculation-for-the-SSDT.patch
+
+# Patches from upstream git
+Patch03: seabios-Set-CONFIG_S3_RESUME_VGA_INIT-to-1.patch
+Patch04: seabios-smbios-avoid-counting-io-hole-as-ram.patch
+Patch05: seabios-Support-for-booting-from-virtio-disks.patch
+Patch06: seabios-zero-memory-before-use.patch
+Patch07: seabios-do-not-advertise-hpet-to-a-guest-OS.patch
+Patch08: seabios-fix-resume-from-S3-with-QXL-device.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -44,6 +52,12 @@ that a typical x86 proprietary BIOS implements.
 
 %patch01 -p1
 %patch02 -p1
+%patch03 -p1
+%patch04 -p1
+%patch05 -p1
+%patch06 -p1
+%patch07 -p1
+%patch08 -p1
 
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
@@ -81,6 +95,13 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Jun 29 2010 Justin M. Forbes <jforbes@redhat.com> 0.5.1-3
+- Support booting from virtio disks
+- zero memory before use
+- Fix resume from S3 when using QXL device
+- Avoid counting io-hole are RAM
+- Do not advertise hpet to guests
+
 * Tue Apr 20 2010 Justin M. Forbes <jforbes@redhat.com> 0.5.1-2
 - Ugly hacks to make package noarch and available for arch that cannot build it.
 - Disable useless debuginfo

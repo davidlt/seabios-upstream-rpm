@@ -1,0 +1,30 @@
+From: Gleb Natapov <gleb@redhat.com>
+Date: Mon, 31 May 2010 13:04:20 -0300
+Subject: [PATCH 2/2] zero memory before use
+
+Zero virtio queue memory before use.
+
+Signed-off-by: Gleb Natapov <gleb@redhat.com>
+--
+			Gleb.
+
+Signed-off-by: Eduardo Habkost <ehabkost@redhat.com>
+---
+ src/virtio-blk.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/src/virtio-blk.c b/src/virtio-blk.c
+index 14719c9..c7144b5 100644
+--- a/src/virtio-blk.c
++++ b/src/virtio-blk.c
+@@ -115,6 +115,7 @@ virtio_blk_setup(void)
+         u16 ioaddr = pci_config_readl(bdf, PCI_BASE_ADDRESS_0) &
+             PCI_BASE_ADDRESS_IO_MASK;
+ 
++        memset(vq, 0, sizeof(*vq));
+         memset(vdrive_g, 0, sizeof(*vdrive_g));
+         vdrive_g->ioaddr = ioaddr;
+         vdrive_g->vq = vq;
+-- 
+1.7.0.3
+

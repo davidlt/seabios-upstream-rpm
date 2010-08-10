@@ -1,16 +1,12 @@
 Name:           seabios
-Version:        0.5.1
-Release:        2%{?dist}
+Version:        0.6.0
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
 License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
 Source0:        http://linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.gz
-
-# Patches from git 0.5.1-stable branch
-Patch01: 0001-Go-back-to-using-0xf0000000-for-PCI-memory-start.patch
-Patch02: 0002-Fix-PkgLength-calculation-for-the-SSDT.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -41,9 +37,6 @@ that a typical x86 proprietary BIOS implements.
 
 %prep
 %setup -q
-
-%patch01 -p1
-%patch02 -p1
 
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
@@ -81,6 +74,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue Aug 10 2010 Justin M. Forbes <jforbes@redhat.com> 0.6.0-1
+- Update seabios to latest stable so we can drop patches.
+
 * Tue Apr 20 2010 Justin M. Forbes <jforbes@redhat.com> 0.5.1-2
 - Ugly hacks to make package noarch and available for arch that cannot build it.
 - Disable useless debuginfo

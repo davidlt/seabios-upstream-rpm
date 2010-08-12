@@ -74,7 +74,7 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
-Thu Aug 12 2010 Justin M. Forbes <jforbes@redhat.com> 0.6.0-1
+* Thu Aug 12 2010 Justin M. Forbes <jforbes@redhat.com> 0.6.0-1
 - Update seabios to latest stable so we can drop patches.
 
 * Tue Jun 29 2010 Justin M. Forbes <jforbes@redhat.com> 0.5.1-3

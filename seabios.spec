@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        0.6.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -8,7 +8,8 @@ License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
 Source0:        http://www.linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.gz
 
-Patch0: seabios-0.6.2-build.patch
+Patch00: seabios-0.6.2-build.patch
+Patch01: seabios-0.6.2-fix-QXL.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -41,6 +42,7 @@ that a typical x86 proprietary BIOS implements.
 %setup -q
 
 %patch00 -p1
+%patch01 -p1
 
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
@@ -78,6 +80,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 13 2011 Justin M. Forbes <jforbes@redhat.com> - 0.6.2-2
+- Fix QXL bug in 0.6.2
+
 * Wed Jul 13 2011 Justin M. forbes <jforbes@redhat.com> - 0.6.2-1
 - Update to 0.6.2 upstream for a number of bugfixes
 

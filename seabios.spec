@@ -1,5 +1,5 @@
 Name:           seabios
-Version:        0.6.1
+Version:        0.6.2
 Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
@@ -7,6 +7,8 @@ Group:          Applications/Emulators
 License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
 Source0:        http://www.linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.gz
+
+Patch0: seabios-0.6.2-build.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -38,6 +40,8 @@ that a typical x86 proprietary BIOS implements.
 %prep
 %setup -q
 
+%patch00 -p1
+
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
 
@@ -45,7 +49,7 @@ sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
 %build
 %ifarch %{ix86} x86_64 
 export CFLAGS="$RPM_OPT_FLAGS"
-make
+make 
 %endif
 
 
@@ -74,6 +78,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Jul 13 2011 Justin M. forbes <jforbes@redhat.com> - 0.6.2-1
+- Update to 0.6.2 upstream for a number of bugfixes
+
 * Mon Feb 14 2011 Justin M. forbes <jforbes@redhat.com> - 0.6.1-1
 - Update to 0.6.1 upstream for a number of bugfixes
 

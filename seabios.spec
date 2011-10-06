@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        0.6.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -10,10 +10,11 @@ Source0:        http://www.linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.g
 
 Patch00: seabios-0.6.2-build.patch
 Patch01: seabios-0.6.2-fix-QXL.patch
+Patch02: seabios-do-not-advertise-S4-S3-in-DSDT.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: python
+BuildRequires: python iasl
 ExclusiveArch: %{ix86} x86_64
 
 Requires: %{name}-bin = %{version}-%{release}
@@ -43,6 +44,7 @@ that a typical x86 proprietary BIOS implements.
 
 %patch00 -p1
 %patch01 -p1
+%patch02 -p1
 
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
@@ -80,6 +82,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Oct 05 2011 Justin M. Forbes <jforbes@redhat.com> - 0.6.2-3
+- Stop advertising S3 and S4 in DSDT (bz#741375)
+- incdule iasl buildreq
+
 * Wed Jul 13 2011 Justin M. Forbes <jforbes@redhat.com> - 0.6.2-2
 - Fix QXL bug in 0.6.2
 

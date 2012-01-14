@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        0.6.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -82,6 +82,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.6.2-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
 * Wed Oct 05 2011 Justin M. Forbes <jforbes@redhat.com> - 0.6.2-3
 - Stop advertising S3 and S4 in DSDT (bz#741375)
 - incdule iasl buildreq

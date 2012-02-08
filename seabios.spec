@@ -1,6 +1,6 @@
 Name:           seabios
-Version:        0.6.2
-Release:        4%{?dist}
+Version:        1.6.3
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -8,9 +8,9 @@ License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
 Source0:        http://www.linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.gz
 
-Patch00: seabios-0.6.2-build.patch
-Patch01: seabios-0.6.2-fix-QXL.patch
-Patch02: seabios-do-not-advertise-S4-S3-in-DSDT.patch
+Patch00: seabios-usb_fix_boot_paths.patch
+Patch01: seabios-do-not-advertise-S4-S3-in-DSDT.patch
+Patch02: seabios-virtio-scsi.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -82,6 +82,10 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Feb 08 2012 Justin M. Forbes <jforbes@redhat.com> - 1.6.3-1
+- Update to 1.6.3 upstream
+- Add virtio-scsi
+
 * Sat Jan 14 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.6.2-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 

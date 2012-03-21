@@ -1,0 +1,17 @@
+diff --git a/src/bregs.h b/src/bregs.h
+index 9a381d0..8e1af4d 100644
+--- a/src/bregs.h
++++ b/src/bregs.h
+@@ -37,9 +37,9 @@
+ struct bregs {
+     u16 ds;
+     u16 es;
+-    UREG(edi, di, di_hi, di_lo);
+-    UREG(esi, si, si_hi, si_lo);
+-    UREG(ebp, bp, bp_hi, bp_lo);
++    UREG(edi, di, dih, dil);
++    UREG(esi, si, sih, sil);
++    UREG(ebp, bp, bph, bpl);
+     UREG(ebx, bx, bh, bl);
+     UREG(edx, dx, dh, dl);
+     UREG(ecx, cx, ch, cl);

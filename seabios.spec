@@ -9,6 +9,7 @@ URL:            http://www.coreboot.org/SeaBIOS
 Source0:        http://www.linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.gz
 
 Patch00: seabios-do-not-advertise-S4-S3-in-DSDT.patch
+Patch01: fix-bregs-for-gcc.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -41,6 +42,7 @@ that a typical x86 proprietary BIOS implements.
 %setup -q
 
 %patch00 -p1
+%patch01 -p1
 
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
@@ -79,6 +81,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %changelog
 * Wed Mar 21 2012 Paolo Bonzini <pbonzini@redhat.com> - 0.6.1-2
+- include fix for newer GCC
 - Stop advertising S3 and S4 in DSDT (bz#704467)
 - incdule iasl buildreq
 

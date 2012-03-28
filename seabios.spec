@@ -11,6 +11,7 @@ Source0:        http://www.linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.g
 Patch00: seabios-usb_fix_boot_paths.patch
 Patch01: seabios-do-not-advertise-S4-S3-in-DSDT.patch
 Patch02: seabios-virtio-scsi.patch
+Patch03: seabios-usb-boot.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -45,6 +46,7 @@ that a typical x86 proprietary BIOS implements.
 %patch00 -p1
 %patch01 -p1
 %patch02 -p1
+%patch03 -p1
 
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile

@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        1.6.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -84,6 +84,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Wed Mar 28 2012 Paolo Bonzini <pbonzini@redhat.com> - 1.6.3-2
+- Fix bugs in booting from host (or redirected) USB pen drives
+
 * Wed Feb 08 2012 Justin M. Forbes <jforbes@redhat.com> - 1.6.3-1
 - Update to 1.6.3 upstream
 - Add virtio-scsi

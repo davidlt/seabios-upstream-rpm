@@ -1,17 +1,16 @@
 Name:           seabios
-Version:        1.6.3
-Release:        2%{?dist}
+Version:        1.7.0
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
 License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
 Source0:        http://www.linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.gz
+# Don't advertise guest support for S3/S4 (bz 741375)
+# keep: Non upstream, carry it until someone needs s3/s4
+Patch1: %{name}-do-not-advertise-S4-S3-in-DSDT.patch
 
-Patch00: seabios-usb_fix_boot_paths.patch
-Patch01: seabios-do-not-advertise-S4-S3-in-DSDT.patch
-Patch02: seabios-virtio-scsi.patch
-Patch03: seabios-usb-boot.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -29,7 +28,7 @@ SeaBIOS is an open-source legacy BIOS implementation which can be used as
 a coreboot payload. It implements the standard BIOS calling interfaces
 that a typical x86 proprietary BIOS implements.
 
-%ifarch %{ix86} x86_64 
+%ifarch %{ix86} x86_64
 %package bin
 Summary: Seabios for x86
 Buildarch: noarch
@@ -42,27 +41,24 @@ that a typical x86 proprietary BIOS implements.
 
 %prep
 %setup -q
+%patch1 -p1
 
-%patch00 -p1
-%patch01 -p1
-%patch02 -p1
-%patch03 -p1
 
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
 
 
 %build
-%ifarch %{ix86} x86_64 
+%ifarch %{ix86} x86_64
 export CFLAGS="$RPM_OPT_FLAGS"
-make 
+make
 %endif
 
 
 %install
 rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/seabios
-%ifarch %{ix86} x86_64 
+%ifarch %{ix86} x86_64
 install -m 0644 out/bios.bin $RPM_BUILD_ROOT%{_datadir}/seabios
 %endif
 
@@ -75,7 +71,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %doc COPYING COPYING.LESSER README TODO
 
-%ifarch %{ix86} x86_64 
+%ifarch %{ix86} x86_64
 %files bin
 %defattr(-,root,root,-)
 %dir %{_datadir}/seabios/
@@ -84,6 +80,12 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon May 28 2012 Cole Robinson <crobinso@redhat.com> - 1.7.0-1
+- Rebased to version 1.7.0
+- Support for virtio-scsi
+- Improved USB drive support
+- Several USB controller bug fixes and improvements
+
 * Wed Mar 28 2012 Paolo Bonzini <pbonzini@redhat.com> - 1.6.3-2
 - Fix bugs in booting from host (or redirected) USB pen drives
 

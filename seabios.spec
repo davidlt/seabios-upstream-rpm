@@ -1,15 +1,12 @@
 Name:           seabios
 Version:        1.7.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
 License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
 Source0:        http://www.linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.gz
-# Don't advertise guest support for S3/S4 (bz 741375)
-# keep: Non upstream, carry it until someone needs s3/s4
-Patch1: %{name}-do-not-advertise-S4-S3-in-DSDT.patch
 
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -41,7 +38,6 @@ that a typical x86 proprietary BIOS implements.
 
 %prep
 %setup -q
-%patch1 -p1
 
 
 # Makefile changes version to include date and buildhost
@@ -80,6 +76,9 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Mon Aug 06 2012 Cole Robinson <crobinso@redhat.com> - 1.7.0-3
+- Enable S3/S4 support for guests (it's an F18 feature after all)
+
 * Sat Jul 21 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.7.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 

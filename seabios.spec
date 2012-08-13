@@ -20,7 +20,7 @@ Requires: %{name}-bin = %{version}-%{release}
 # You can build a debugging version of the BIOS by setting this to a
 # value > 1.  See src/config.h for possible values, but setting it to
 # a number like 99 will enable all possible debugging.  Note that
-# debugging does to a special qemu port that you have to enable.  See
+# debugging goes to a special qemu port that you have to enable.  See
 # the SeaBIOS top-level README file for the magic qemu invocation to
 # enable this.
 %global debug_level 1

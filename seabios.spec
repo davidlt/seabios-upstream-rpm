@@ -17,6 +17,14 @@ Requires: %{name}-bin = %{version}-%{release}
 # Disable debuginfo because it is of no use to us.
 %global debug_package %{nil}
 
+# You can build a debugging version of the BIOS by setting this to a
+# value > 1.  See src/config.h for possible values, but setting it to
+# a number like 99 will enable all possible debugging.  Note that
+# debugging does to a special qemu port that you have to enable.  See
+# the SeaBIOS top-level README file for the magic qemu invocation to
+# enable this.
+%global debug_level 1
+
 
 %description
 SeaBIOS is an open-source legacy BIOS implementation which can be used as
@@ -45,6 +53,9 @@ sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
 
 
 %build
+make .config
+sed -i 's,CONFIG_DEBUG_LEVEL=.*,CONFIG_DEBUG_LEVEL=%{debug_level},g' .config
+
 %ifarch %{ix86} x86_64
 export CFLAGS="$RPM_OPT_FLAGS"
 make
@@ -72,6 +83,7 @@ install -m 0644 out/bios.bin $RPM_BUILD_ROOT%{_datadir}/seabios
 %changelog
 * Mon Aug 13 2012 Richard W.M. Jones <rjones@redhat.com> - 1.7.0-4
 - Modernise and tidy up the RPM.
+- Allow debug versions of SeaBIOS to be built easily.
 
 * Mon Aug 06 2012 Cole Robinson <crobinso@redhat.com> - 1.7.0-3
 - Enable S3/S4 support for guests (it's an F18 feature after all)

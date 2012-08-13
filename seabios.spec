@@ -1,15 +1,12 @@
 Name:           seabios
 Version:        1.7.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
 License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
 Source0:        http://www.linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.gz
-
-
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires: python iasl
 ExclusiveArch: %{ix86} x86_64
@@ -20,15 +17,18 @@ Requires: %{name}-bin = %{version}-%{release}
 # Disable debuginfo because it is of no use to us.
 %global debug_package %{nil}
 
+
 %description
 SeaBIOS is an open-source legacy BIOS implementation which can be used as
 a coreboot payload. It implements the standard BIOS calling interfaces
 that a typical x86 proprietary BIOS implements.
 
+
 %ifarch %{ix86} x86_64
 %package bin
 Summary: Seabios for x86
 Buildarch: noarch
+
 
 %description bin
 SeaBIOS is an open-source legacy BIOS implementation which can be used as
@@ -36,9 +36,9 @@ a coreboot payload. It implements the standard BIOS calling interfaces
 that a typical x86 proprietary BIOS implements.
 %endif
 
+
 %prep
 %setup -q
-
 
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
@@ -52,30 +52,27 @@ make
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/seabios
 %ifarch %{ix86} x86_64
 install -m 0644 out/bios.bin $RPM_BUILD_ROOT%{_datadir}/seabios
 %endif
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-
 %files
-%defattr(-,root,root,-)
 %doc COPYING COPYING.LESSER README TODO
+
 
 %ifarch %{ix86} x86_64
 %files bin
-%defattr(-,root,root,-)
 %dir %{_datadir}/seabios/
 %{_datadir}/seabios/bios.bin
 %endif
 
 
 %changelog
+* Mon Aug 13 2012 Richard W.M. Jones <rjones@redhat.com> - 1.7.0-4
+- Modernise and tidy up the RPM.
+
 * Mon Aug 06 2012 Cole Robinson <crobinso@redhat.com> - 1.7.0-3
 - Enable S3/S4 support for guests (it's an F18 feature after all)
 

@@ -1,12 +1,12 @@
 Name:           seabios
-Version:        1.7.0
-Release:        4%{?dist}
+Version:        1.7.1
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
 License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
-Source0:        http://www.linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.gz
+Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
 
 BuildRequires: python iasl
 ExclusiveArch: %{ix86} x86_64
@@ -81,6 +81,14 @@ install -m 0644 out/bios.bin $RPM_BUILD_ROOT%{_datadir}/seabios
 
 
 %changelog
+* Wed Sep 05 2012 Cole Robinson <crobinso@redhat.com> - 1.7.1-1
+- Rebased to version 1.7.1
+- Initial support for booting from USB attached scsi (USB UAS) drives
+- USB EHCI 64bit controller support
+- USB MSC multi-LUN device support
+- Support for booting from LSI SCSI controllers on emulators
+- Support for booting from AMD PCscsi controllers on emulators
+
 * Mon Aug 13 2012 Richard W.M. Jones <rjones@redhat.com> - 1.7.0-4
 - Modernise and tidy up the RPM.
 - Allow debug versions of SeaBIOS to be built easily.

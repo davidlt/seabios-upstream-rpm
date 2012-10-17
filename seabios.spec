@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        1.7.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -9,7 +9,7 @@ URL:            http://www.coreboot.org/SeaBIOS
 Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
 
 BuildRequires: python iasl
-ExclusiveArch: %{ix86} x86_64
+BuildRequires: binutils-x86_64-linux-gnu gcc-x86_64-linux-gnu
 
 Requires: %{name}-bin = %{version}-%{release}
 
@@ -32,7 +32,6 @@ a coreboot payload. It implements the standard BIOS calling interfaces
 that a typical x86 proprietary BIOS implements.
 
 
-%ifarch %{ix86} x86_64
 %package bin
 Summary: Seabios for x86
 Buildarch: noarch
@@ -42,7 +41,6 @@ Buildarch: noarch
 SeaBIOS is an open-source legacy BIOS implementation which can be used as
 a coreboot payload. It implements the standard BIOS calling interfaces
 that a typical x86 proprietary BIOS implements.
-%endif
 
 
 %prep
@@ -53,34 +51,37 @@ sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
 
 
 %build
-make .config
+make .config V=1
 sed -i 's,CONFIG_DEBUG_LEVEL=.*,CONFIG_DEBUG_LEVEL=%{debug_level},g' .config
 
-%ifarch %{ix86} x86_64
 export CFLAGS="$RPM_OPT_FLAGS"
-make
-%endif
-
+make V=1 \
+	HOSTCC=gcc \
+	CC=x86_64-linux-gnu-gcc \
+	AS=x86_64-linux-gnu-as \
+	LD=x86_64-linux-gnu-ld \
+	OBJCOPY=x86_64-linux-gnu-objcopy \
+	OBJDUMP=x86_64-linux-gnu-objdump \
+	STRIP=x86_64-linux-gnu-strip
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/seabios
-%ifarch %{ix86} x86_64
 install -m 0644 out/bios.bin $RPM_BUILD_ROOT%{_datadir}/seabios
-%endif
 
 
 %files
 %doc COPYING COPYING.LESSER README TODO
 
 
-%ifarch %{ix86} x86_64
 %files bin
 %dir %{_datadir}/seabios/
 %{_datadir}/seabios/bios.bin
-%endif
 
 
 %changelog
+* Wed Oct 17 2012 Paolo Bonzini <pbonzini@redhat.com> - 1.7.1-2
+- Build with cross compiler.  Resolves: #866664.
+
 * Wed Sep 05 2012 Cole Robinson <crobinso@redhat.com> - 1.7.1-1
 - Rebased to version 1.7.1
 - Initial support for booting from USB attached scsi (USB UAS) drives

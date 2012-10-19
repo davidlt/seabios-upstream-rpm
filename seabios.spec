@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        1.7.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -8,10 +8,17 @@ License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
 Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
 
+Source10:       config.vga.cirrus
+Source11:       config.vga.isavga
+Source12:       config.vga.qxl
+Source13:       config.vga.stdvga
+Source14:       config.vga.vmware
+
 BuildRequires: python iasl
 BuildRequires: binutils-x86_64-linux-gnu gcc-x86_64-linux-gnu
 
 Requires: %{name}-bin = %{version}-%{release}
+Requires: seavgabios-bin = %{version}-%{release}
 
 # Seabios is noarch, but required on architectures which cannot build it.
 # Disable debuginfo because it is of no use to us.
@@ -43,6 +50,15 @@ a coreboot payload. It implements the standard BIOS calling interfaces
 that a typical x86 proprietary BIOS implements.
 
 
+%package -n seavgabios-bin
+Summary: Seavgabios for x86
+Buildarch: noarch
+
+
+%description -n seavgabios-bin
+SeaVGABIOS is an open-source VGABIOS implementation.
+
+
 %prep
 %setup -q
 
@@ -55,6 +71,9 @@ make .config V=1
 sed -i 's,CONFIG_DEBUG_LEVEL=.*,CONFIG_DEBUG_LEVEL=%{debug_level},g' .config
 
 export CFLAGS="$RPM_OPT_FLAGS"
+mkdir binaries
+
+# seabios
 make V=1 \
 	HOSTCC=gcc \
 	CC=x86_64-linux-gnu-gcc \
@@ -63,10 +82,33 @@ make V=1 \
 	OBJCOPY=x86_64-linux-gnu-objcopy \
 	OBJDUMP=x86_64-linux-gnu-objdump \
 	STRIP=x86_64-linux-gnu-strip
+cp out/bios.bin binaries
+
+# seavgabios
+for config in %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14}; do
+	name=${config#*config.vga.}
+	make clean distclean
+	cp ${config} .config
+	echo "CONFIG_DEBUG_LEVEL=%{debug_level}" >> .config
+	make oldnoconfig
+	make V=1 \
+		HOSTCC=gcc \
+		CC=x86_64-linux-gnu-gcc \
+		AS=x86_64-linux-gnu-as \
+		LD=x86_64-linux-gnu-ld \
+		OBJCOPY=x86_64-linux-gnu-objcopy \
+		OBJDUMP=x86_64-linux-gnu-objdump \
+		STRIP=x86_64-linux-gnu-strip \
+		out/vgabios.bin
+	cp out/vgabios.bin binaries/vgabios-${name}.bin
+done
+
 
 %install
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/seabios
-install -m 0644 out/bios.bin $RPM_BUILD_ROOT%{_datadir}/seabios
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/seavgabios
+install -m 0644 binaries/bios.bin $RPM_BUILD_ROOT%{_datadir}/seabios
+install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %files
@@ -77,8 +119,15 @@ install -m 0644 out/bios.bin $RPM_BUILD_ROOT%{_datadir}/seabios
 %dir %{_datadir}/seabios/
 %{_datadir}/seabios/bios.bin
 
+%files -n seavgabios-bin
+%dir %{_datadir}/seavgabios/
+%{_datadir}/seavgabios/vgabios*.bin
+
 
 %changelog
+* Fri Oct 19 2012 Cole Robinson <crobinso@redhat.com> - 1.7.1-3
+- Add seavgabios subpackage
+
 * Wed Oct 17 2012 Paolo Bonzini <pbonzini@redhat.com> - 1.7.1-2
 - Build with cross compiler.  Resolves: #866664.
 

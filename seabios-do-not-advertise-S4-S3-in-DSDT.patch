@@ -1,31 +1,49 @@
-diff -rup seabios-1.7.0/Makefile mysea/Makefile
---- seabios-1.7.0/Makefile	2012-05-28 16:53:27.898842738 -0400
-+++ mysea/Makefile	2012-05-28 16:50:37.307644939 -0400
-@@ -221,7 +221,7 @@ $(OUT)vgabios.bin: $(OUT)vgabios.bin.raw
+diff -rup seabios-1.7.1/Makefile fix/Makefile
+--- seabios-1.7.1/Makefile	2012-08-31 12:12:45.000000000 -0400
++++ fix/Makefile	2012-10-27 20:54:11.195876698 -0400
+@@ -226,7 +226,7 @@ iasl-option=$(shell if test -z "`$(1) $(
  
- src/%.hex: src/%.dsl ./tools/acpi_extract_preprocess.py ./tools/acpi_extract.py
- 	@echo "Compiling DSDT"
+ $(OUT)%.hex: src/%.dsl ./tools/acpi_extract_preprocess.py ./tools/acpi_extract.py
+ 	@echo "  Compiling IASL $@"
 -	$(Q)cpp -P $< > $(OUT)$*.dsl.i.orig
 +	$(Q)cpp $(DSDT_CPP_FLAGS) -P $< > $(OUT)$*.dsl.i.orig
  	$(Q)$(PYTHON) ./tools/acpi_extract_preprocess.py $(OUT)$*.dsl.i.orig > $(OUT)$*.dsl.i
- 	$(Q)iasl -l -tc -p $(OUT)$* $(OUT)$*.dsl.i
+ 	$(Q)$(IASL) $(call iasl-option,$(IASL),-Pn,) -vs -l -tc -p $(OUT)$* $(OUT)$*.dsl.i
  	$(Q)$(PYTHON) ./tools/acpi_extract.py $(OUT)$*.lst > $(OUT)$*.off
-diff -rup seabios-1.7.0/src/acpi-dsdt.dsl mysea/src/acpi-dsdt.dsl
---- seabios-1.7.0/src/acpi-dsdt.dsl	2012-04-14 22:27:40.000000000 -0400
-+++ mysea/src/acpi-dsdt.dsl	2012-05-28 16:52:11.745575415 -0400
-@@ -609,6 +609,7 @@ DefinitionBlock (
+diff -rup seabios-1.7.1/src/ssdt-pcihp.dsl fix/src/ssdt-pcihp.dsl
+--- seabios-1.7.1/src/ssdt-pcihp.dsl	2012-08-31 12:12:45.000000000 -0400
++++ fix/src/ssdt-pcihp.dsl	2012-10-27 21:09:21.146977543 -0400
+@@ -101,6 +101,7 @@ DefinitionBlock ("ssdt-pcihp.aml", "SSDT
   * Suspend
   ****************************************************************/
  
-+#ifdef DSDT_PM
++#ifdef DSTDT_PM
      /*
       * S3 (suspend-to-ram), S4 (suspend-to-disk) and S5 (power-off) type codes:
       * must match piix4 emulation.
-@@ -627,6 +628,7 @@ DefinitionBlock (
-         Zero,  /* reserved */
-         Zero   /* reserved */
-     })
+@@ -123,6 +124,7 @@ DefinitionBlock ("ssdt-pcihp.aml", "SSDT
+             Zero,  /* reserved */
+             Zero   /* reserved */
+         })
 +#endif
-     Name (\_S5, Package (0x04)
-     {
-         Zero,  /* PM1a_CNT.SLP_TYP */
+         Name (_S5, Package (0x04)
+         {
+             Zero,  /* PM1a_CNT.SLP_TYP */
+diff -rup seabios-1.7.1/src/acpi.c foo/src/acpi.c
+--- seabios-1.7.1/src/acpi.c	2012-08-31 12:12:45.000000000 -0400
++++ foo/src/acpi.c	2012-10-27 21:12:13.938926828 -0400
+@@ -557,12 +557,14 @@ static void* build_pcihp(void)
+     if (!sys_states || sys_state_size != 6)
+         sys_states = (char[]){128, 0, 0, 129, 128, 128};
+ 
++#ifdef DSTDT_PM
+     if (!(sys_states[3] & 128))
+         ssdt[acpi_s3_name[0]] = 'X';
+     if (!(sys_states[4] & 128))
+         ssdt[acpi_s4_name[0]] = 'X';
+     else
+         ssdt[acpi_s4_pkg[0] + 1] = ssdt[acpi_s4_pkg[0] + 3] = sys_states[4] & 127;
++#endif
+     ((struct acpi_table_header*)ssdt)->checksum = 0;
+     ((struct acpi_table_header*)ssdt)->checksum -= checksum(ssdt, sizeof(ssdp_pcihp_aml));
+ 

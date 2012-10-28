@@ -1,5 +1,5 @@
 Name:           seabios
-Version:        1.7.0
+Version:        1.7.1
 Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
@@ -9,7 +9,7 @@ URL:            http://www.coreboot.org/SeaBIOS
 Source0:        http://www.linuxtogo.org/~kevin/SeaBIOS/%{name}-%{version}.tar.gz
 # Don't advertise guest support for S3/S4 (bz 741375)
 # keep: Non upstream, carry it until someone needs s3/s4
-Patch1: %{name}-do-not-advertise-S4-S3-in-DSDT.patch
+Patch1: seabios-do-not-advertise-S4-S3-in-DSDT.patch
 
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -80,6 +80,16 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Sat Oct 27 2012 Cole Robinson <crobinso@redhat.com> - 1.7.1-1
+- Rebased to version 1.7.1
+- Initial support for booting from USB attached scsi (USB UAS) drives
+- USB EHCI 64bit controller support
+- USB MSC multi-LUN device support
+- Support for booting from LSI SCSI controllers on emulators
+- Support for booting from AMD PCscsi controllers on emulators
+- Failed boots now loop every 60 seconds, fixes some pxe issues (bz
+  #586324)
+
 * Mon May 28 2012 Cole Robinson <crobinso@redhat.com> - 1.7.0-1
 - Rebased to version 1.7.0
 - Support for virtio-scsi

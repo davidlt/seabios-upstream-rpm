@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        1.7.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -19,6 +19,7 @@ BuildRequires: binutils-x86_64-linux-gnu gcc-x86_64-linux-gnu
 
 Requires: %{name}-bin = %{version}-%{release}
 Requires: seavgabios-bin = %{version}-%{release}
+Buildarch: noarch
 
 # Seabios is noarch, but required on architectures which cannot build it.
 # Disable debuginfo because it is of no use to us.
@@ -125,6 +126,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Thu Dec  6 2012 Peter Robinson <pbrobinson@fedoraproject.org> 1.7.1-4
+- Root seabios package is noarch too because it only contains docs
+
 * Fri Oct 19 2012 Cole Robinson <crobinso@redhat.com> - 1.7.1-3
 - Add seavgabios subpackage
 

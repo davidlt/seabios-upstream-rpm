@@ -1,12 +1,21 @@
+%global gitcommit a810e4e7
+
 Name:           seabios
-Version:        1.7.1
-Release:        4%{?dist}
+Version:        1.7.2
+Release:        0.1.git%{gitcommit}%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
 License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
-Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
+
+# Generated with:
+#   git clone git://git.seabios.org/seabios.git
+#   cd seabios
+#   git archive -o ../seabios-%{gitcommit}.tar.gz \
+#       --prefix seabios-%{gitcommit}/ %{gitcommit}
+Source0:        seabios-%{gitcommit}.tar.gz
+#Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
 
 Source10:       config.vga.cirrus
 Source11:       config.vga.isavga
@@ -61,7 +70,7 @@ SeaVGABIOS is an open-source VGABIOS implementation.
 
 
 %prep
-%setup -q
+%setup -q -n seabios-%{gitcommit}
 
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile

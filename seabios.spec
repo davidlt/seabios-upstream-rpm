@@ -2,20 +2,14 @@
 
 Name:           seabios
 Version:        1.7.2
-Release:        0.1.git%{gitcommit}%{?dist}
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
 License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
 
-# Generated with:
-#   git clone git://git.seabios.org/seabios.git
-#   cd seabios
-#   git archive -o ../seabios-%{gitcommit}.tar.gz \
-#       --prefix seabios-%{gitcommit}/ %{gitcommit}
-Source0:        seabios-%{gitcommit}.tar.gz
-#Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
+Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
 
 Source10:       config.vga.cirrus
 Source11:       config.vga.isavga
@@ -70,7 +64,7 @@ SeaVGABIOS is an open-source VGABIOS implementation.
 
 
 %prep
-%setup -q -n seabios-%{gitcommit}
+%setup -q
 
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
@@ -135,6 +129,14 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Thu Jan 24 2013 Cole Robinson <crobinso@redhat.com> - 1.7.2-1
+- Rebased to version 1.7.2
+- Support for ICH9 host chipset ("q35") on emulators
+- Support for booting from LSI MegaRAID SAS controllers
+- Support for using the ACPI PM timer on emulators
+- Improved Geode VGA BIOS support.
+- Several bug fixes
+
 * Thu Dec  6 2012 Peter Robinson <pbrobinson@fedoraproject.org> 1.7.1-4
 - Root seabios package is noarch too because it only contains docs
 

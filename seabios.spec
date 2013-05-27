@@ -1,7 +1,5 @@
-%global gitcommit a810e4e7
-
 Name:           seabios
-Version:        1.7.2
+Version:        1.7.2.2
 Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
@@ -9,7 +7,11 @@ Group:          Applications/Emulators
 License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
 
-Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
+# No source releases of seabios stable. To generate:
+# git clone git://git.seabios.org/seabios.git && cd seabios
+# git archive --output seabios-1.7.2.2.tar.gz --prefix seabios-1.7.2.2/ rel-1.7.2.2
+#Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
+Source0: seabios-%{version}.tar.gz
 
 Source10:       config.vga.cirrus
 Source11:       config.vga.isavga
@@ -57,7 +59,8 @@ that a typical x86 proprietary BIOS implements.
 %package -n seavgabios-bin
 Summary: Seavgabios for x86
 Buildarch: noarch
-
+Obsoletes: vgabios < vgabios-0.6c-10
+Provides: vgabios = vgabios-0.6c-10
 
 %description -n seavgabios-bin
 SeaVGABIOS is an open-source VGABIOS implementation.
@@ -129,6 +132,10 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Mon May 27 2013 Cole Robinson <crobinso@redhat.com> - 1.7.2.2-1
+- Update to seabios stable 1.7.2.2
+- Obsolete vgabios (bz #967315)
+
 * Thu Jan 24 2013 Cole Robinson <crobinso@redhat.com> - 1.7.2-1
 - Rebased to version 1.7.2
 - Support for ICH9 host chipset ("q35") on emulators

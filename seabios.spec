@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        1.7.2.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -59,8 +59,7 @@ that a typical x86 proprietary BIOS implements.
 %package -n seavgabios-bin
 Summary: Seavgabios for x86
 Buildarch: noarch
-Obsoletes: vgabios < vgabios-0.6c-10
-Provides: vgabios = vgabios-0.6c-10
+Obsoletes: vgabios
 
 %description -n seavgabios-bin
 SeaVGABIOS is an open-source VGABIOS implementation.
@@ -132,6 +131,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Tue Jul 09 2013 Cole Robinson <crobinso@redhat.com> - 1.7.2.2-2
+- Again fix vgabios obsoletes (bz #981147)
+
 * Mon May 27 2013 Cole Robinson <crobinso@redhat.com> - 1.7.2.2-1
 - Update to seabios stable 1.7.2.2
 - Obsolete vgabios (bz #967315)

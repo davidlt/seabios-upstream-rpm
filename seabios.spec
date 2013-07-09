@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        1.7.3
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -85,6 +85,7 @@ make V=1 \
 	OBJDUMP=x86_64-linux-gnu-objdump \
 	STRIP=x86_64-linux-gnu-strip
 cp out/bios.bin binaries
+cp out/*dsdt*.aml binaries
 
 # seavgabios
 for config in %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14}; do
@@ -110,6 +111,7 @@ done
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/seabios
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/seavgabios
 install -m 0644 binaries/bios.bin $RPM_BUILD_ROOT%{_datadir}/seabios
+install -m 0644 binaries/*.aml $RPM_BUILD_ROOT%{_datadir}/seabios
 install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
@@ -120,6 +122,7 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 %files bin
 %dir %{_datadir}/seabios/
 %{_datadir}/seabios/bios.bin
+%{_datadir}/seabios/*.aml
 
 %files -n seavgabios-bin
 %dir %{_datadir}/seavgabios/
@@ -127,6 +130,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Tue Jul 09 2013 Cole Robinson <crobinso@redhat.com> - 1.7.3-2
+- Install aml files for use by qemu
+
 * Mon Jul 08 2013 Cole Robinson <crobinso@redhat.com> - 1.7.3-1
 - Rebased to version 1.7.3
 - Initial support for using SeaBIOS as a UEFI CSM

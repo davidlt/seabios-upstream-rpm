@@ -1,6 +1,6 @@
 Name:           seabios
-Version:        1.7.3
-Release:        3%{?dist}
+Version:        1.7.3.1
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -130,6 +130,13 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Wed Aug 14 2013 Cole Robinson <crobinso@redhat.com> - 1.7.3.1-1
+- Rebased to version 1.7.3.1
+- Fix USB EHCI detection that was broken in hlist conversion of
+  PCIDevices.
+- Fix bug in CBFS file walking with compressed files.
+- acpi: sync FADT flags from PIIX4 to Q35
+
 * Sun Aug 04 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.7.3-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 

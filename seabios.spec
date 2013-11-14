@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        1.7.3.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -69,14 +69,21 @@ sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
 
 
 %build
-make .config V=1
-sed -i 's,CONFIG_DEBUG_LEVEL=.*,CONFIG_DEBUG_LEVEL=%{debug_level},g' .config
-
 export CFLAGS="$RPM_OPT_FLAGS"
 mkdir binaries
 
 # seabios
-make V=1 \
+echo 'CONFIG_DEBUG_LEVEL=%{debug_level},g' > config.template
+echo 'CONFIG_QEMU_HARDWARE=y' >> config.template
+echo 'CONFIG_PERMIT_UNALIGNED_PCIROM=y' >> config.template
+
+for i in csm coreboot qemu; do
+  make clean
+  cp config.template .config
+  echo CONFIG_`echo $i | tr a-z A-Z`=y >> .config
+  make oldnoconfig V=1
+
+  make V=1 \
 	HOSTCC=gcc \
 	CC=x86_64-linux-gnu-gcc \
 	AS=x86_64-linux-gnu-as \
@@ -84,7 +91,8 @@ make V=1 \
 	OBJCOPY=x86_64-linux-gnu-objcopy \
 	OBJDUMP=x86_64-linux-gnu-objdump \
 	STRIP=x86_64-linux-gnu-strip
-cp out/bios.bin binaries
+  cp out/bios.bin binaries/bios-$i.bin
+done
 cp out/*dsdt*.aml binaries
 
 # seavgabios
@@ -110,7 +118,9 @@ done
 %install
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/seabios
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/seavgabios
-install -m 0644 binaries/bios.bin $RPM_BUILD_ROOT%{_datadir}/seabios
+install -m 0644 binaries/bios-qemu.bin $RPM_BUILD_ROOT%{_datadir}/seabios/bios.bin
+install -m 0644 binaries/bios-csm.bin $RPM_BUILD_ROOT%{_datadir}/seabios/bios-csm.bin
+install -m 0644 binaries/bios-coreboot.bin $RPM_BUILD_ROOT%{_datadir}/seabios/bios-coreboot.bin
 install -m 0644 binaries/*.aml $RPM_BUILD_ROOT%{_datadir}/seabios
 install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
@@ -121,7 +131,7 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 %files bin
 %dir %{_datadir}/seabios/
-%{_datadir}/seabios/bios.bin
+%{_datadir}/seabios/bios*.bin
 %{_datadir}/seabios/*.aml
 
 %files -n seavgabios-bin
@@ -130,6 +140,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Thu Nov 14 2013 Paolo Bonzini <pbonzini@redhat.com> - 1.7.3.1-2
+- Compile as all three of BIOS, CSM and CoreBoot payload.
+
 * Wed Aug 14 2013 Cole Robinson <crobinso@redhat.com> - 1.7.3.1-1
 - Rebased to version 1.7.3.1
 - Fix USB EHCI detection that was broken in hlist conversion of

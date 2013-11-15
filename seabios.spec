@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        1.7.3.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -73,7 +73,7 @@ export CFLAGS="$RPM_OPT_FLAGS"
 mkdir binaries
 
 # seabios
-echo 'CONFIG_DEBUG_LEVEL=%{debug_level},g' > config.template
+echo 'CONFIG_DEBUG_LEVEL=%{debug_level}' > config.template
 echo 'CONFIG_QEMU_HARDWARE=y' >> config.template
 echo 'CONFIG_PERMIT_UNALIGNED_PCIROM=y' >> config.template
 
@@ -140,6 +140,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Thu Nov 14 2013 Paolo Bonzini <pbonzini@redhat.com> - 1.7.3.1-3
+- Fix pasto in CONFIG_DEBUG_LEVEL.
+
 * Thu Nov 14 2013 Paolo Bonzini <pbonzini@redhat.com> - 1.7.3.1-2
 - Compile as all three of BIOS, CSM and CoreBoot payload.
 

@@ -1,6 +1,6 @@
 Name:           seabios
-Version:        1.7.3.1
-Release:        3%{?dist}
+Version:        1.7.3.2
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -140,6 +140,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Tue Nov 19 2013 Cole Robinson <crobinso@redhat.com> - 1.7.3.2-1
+- Update to 1.7.3.2 for qemu 1.7
+
 * Thu Nov 14 2013 Paolo Bonzini <pbonzini@redhat.com> - 1.7.3.1-3
 - Fix pasto in CONFIG_DEBUG_LEVEL.
 

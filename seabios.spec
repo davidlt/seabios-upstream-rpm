@@ -1,5 +1,5 @@
 Name:           seabios
-Version:        1.7.3.2
+Version:        1.7.4
 Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
@@ -25,6 +25,9 @@ Buildarch: noarch
 # Seabios is noarch, but required on architectures which cannot build it.
 # Disable debuginfo because it is of no use to us.
 %global debug_package %{nil}
+
+# Similarly, tell RPM to not complain about x86 roms being shipped noarch
+%global _binaries_in_noarch_packages_terminate_build   0
 
 # You can build a debugging version of the BIOS by setting this to a
 # value > 1.  See src/config.h for possible values, but setting it to
@@ -77,23 +80,27 @@ echo 'CONFIG_DEBUG_LEVEL=%{debug_level}' > config.template
 echo 'CONFIG_QEMU_HARDWARE=y' >> config.template
 echo 'CONFIG_PERMIT_UNALIGNED_PCIROM=y' >> config.template
 
-for i in csm coreboot qemu; do
-  make clean
-  cp config.template .config
-  echo CONFIG_`echo $i | tr a-z A-Z`=y >> .config
-  make oldnoconfig V=1
+build_bios() {
+    make clean
+    cp config.template .config
+    echo CONFIG_`echo $1 | tr a-z A-Z`=y >> .config
+    make oldnoconfig V=1
 
-  make V=1 \
-	HOSTCC=gcc \
-	CC=x86_64-linux-gnu-gcc \
-	AS=x86_64-linux-gnu-as \
-	LD=x86_64-linux-gnu-ld \
-	OBJCOPY=x86_64-linux-gnu-objcopy \
-	OBJDUMP=x86_64-linux-gnu-objdump \
-	STRIP=x86_64-linux-gnu-strip
-  cp out/bios.bin binaries/bios-$i.bin
-done
-cp out/*dsdt*.aml binaries
+    make V=1 \
+        HOSTCC=gcc \
+        CC=x86_64-linux-gnu-gcc \
+        AS=x86_64-linux-gnu-as \
+        LD=x86_64-linux-gnu-ld \
+        OBJCOPY=x86_64-linux-gnu-objcopy \
+        OBJDUMP=x86_64-linux-gnu-objdump \
+        STRIP=x86_64-linux-gnu-strip
+  cp out/$2 binaries/bios-$1.bin
+}
+
+build_bios csm Csm16.bin
+build_bios coreboot bios.bin.elf
+build_bios qemu bios.bin
+cp out/src/fw/*dsdt*.aml binaries
 
 # seavgabios
 for config in %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14}; do
@@ -140,6 +147,14 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Mon Jan 06 2014 Cole Robinson <crobinso@redhat.com> - 1.7.4-1
+- Rebased to version 1.7.4
+- Support for obtaining ACPI tables directly from QEMU.
+- Initial support for XHCI USB controllers (initially for QEMU only).
+- Support for booting from "pvscsi" devices on QEMU.
+- Enhanced floppy driver - improved support for real hardware.
+- coreboot cbmem console support.
+
 * Tue Nov 19 2013 Cole Robinson <crobinso@redhat.com> - 1.7.3.2-1
 - Update to 1.7.3.2 for qemu 1.7
 

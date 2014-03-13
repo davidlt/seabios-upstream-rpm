@@ -1,0 +1,54 @@
+From 5f2d17d35b2339526f3b3d580b279ea78e406a25 Mon Sep 17 00:00:00 2001
+Message-Id: <5f2d17d35b2339526f3b3d580b279ea78e406a25.1394734933.git.crobinso@redhat.com>
+From: Laszlo Ersek <lersek@redhat.com>
+Date: Wed, 15 Jan 2014 02:48:40 +0100
+Subject: [PATCH] init_virtio_scsi(): reset the HBA before freeing its virtio
+ ring
+
+When init_virtio_scsi() finds no SCSI targets connected to the HBA, it
+frees the virtio ring. Other code in SeaBIOS proceeds to overwrite the
+area. However, the ring is in use by qemu at that point -- not only did we
+report the (ACK|DRIVER|DRIVER_OK) status earlier, we even communicated
+over the ring.
+
+Of course SeaBIOS doesn't "kick" the HBA ever again, hence qemu has no
+reason to look at the ring. However, when qemu uses KVM acceleration, and
+ioeventfd is enabled for the HBA, then a vmstate change to "running"
+(including stop->cont monitor commands and incoming migration) "forces" a
+kick (see qemu commit 25db9ebe). Qemu then tries to interpret whatever
+unrelated guest data is in the HBA's original ring area, as virtio
+protocol. Qemu exits upon seeing the garbage.
+
+init_virtio_scsi() should reset the HBA before allowing the virtio ring
+memory to be reused. Device reset causes the hypervisor to drop its
+references.
+
+This change is justified / underpinned by pure virtio-spec compliance as
+well.
+
+Related RHBZ: https://bugzilla.redhat.com/show_bug.cgi?id=1013418
+
+Signed-off-by: Laszlo Ersek <lersek@redhat.com>
+---
+ src/virtio-scsi.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/src/hw/virtio-scsi.c b/src/hw/virtio-scsi.c
+index 4b4ec7b..48fb3e1 100644
+--- a/src/virtio-scsi.c
++++ b/src/virtio-scsi.c
+@@ -158,8 +158,10 @@ init_virtio_scsi(struct pci_device *pci)
+     for (tot = 0, i = 0; i < 256; i++)
+         tot += virtio_scsi_scan_target(pci, ioaddr, vq, i);
+ 
+-    if (!tot)
++    if (!tot) {
++        vp_reset(ioaddr);
+         goto fail;
++    }
+ 
+     return;
+ 
+-- 
+1.8.5.3
+

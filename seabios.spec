@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        1.7.2.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -18,6 +18,9 @@ Source11:       config.vga.isavga
 Source12:       config.vga.qxl
 Source13:       config.vga.stdvga
 Source14:       config.vga.vmware
+
+# Fix kvm migration with empty virtio-scsi controller (bz #1032208)
+Patch0001: 0001-init_virtio_scsi-reset-the-HBA-before-freeing-its-vi.patch
 
 BuildRequires: python iasl
 BuildRequires: binutils-x86_64-linux-gnu gcc-x86_64-linux-gnu
@@ -67,6 +70,9 @@ SeaVGABIOS is an open-source VGABIOS implementation.
 
 %prep
 %setup -q
+
+# Fix kvm migration with empty virtio-scsi controller (bz #1032208)
+%patch0001 -p1
 
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
@@ -131,6 +137,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Thu Mar 13 2014 Cole Robinson <crobinso@redhat.com> - 1.7.2.2-3
+- Fix kvm migration with empty virtio-scsi controller (bz #1032208)
+
 * Tue Jul 09 2013 Cole Robinson <crobinso@redhat.com> - 1.7.2.2-2
 - Again fix vgabios obsoletes (bz #981147)
 

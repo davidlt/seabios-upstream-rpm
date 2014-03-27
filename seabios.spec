@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        1.7.4
-Release:        3%{?dist}
+Release:        5%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -21,6 +21,9 @@ Source18:       config.seabios-256k
 
 # Fix kvm migration with empty virtio-scsi controller (bz #1032208)
 Patch0001: 0001-init_virtio_scsi-reset-the-HBA-before-freeing-its-vi.patch
+
+# Fix freebsd problem
+Patch0002: vgabios-attempt-to-detect-old-x86emu-and-force-a-fault.diff
 
 BuildRequires: python iasl
 BuildRequires: binutils-x86_64-linux-gnu gcc-x86_64-linux-gnu
@@ -76,6 +79,8 @@ SeaVGABIOS is an open-source VGABIOS implementation.
 
 # Fix kvm migration with empty virtio-scsi controller (bz #1032208)
 %patch0001 -p1
+# Fix running freebsd (https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=737142)
+%patch0002 -p1
 
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
@@ -143,6 +148,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Wed Mar 26 2014 Matthias Clasen <mclasen@redhat.com> 1.7.4-5
+- Fix booting FreeBSD VMs in virt-manager
+
 * Mon Mar 17 2014 Cole Robinson <crobinso@redhat.com> 1.7.4-3
 - Build 256k bios images for qemu 2.0
 

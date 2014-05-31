@@ -1,6 +1,6 @@
 Name:           seabios
-Version:        1.7.4
-Release:        5%{?dist}
+Version:        1.7.5
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -18,12 +18,6 @@ Source15:       config.csm
 Source16:       config.coreboot
 Source17:       config.seabios-128k
 Source18:       config.seabios-256k
-
-# Fix kvm migration with empty virtio-scsi controller (bz #1032208)
-Patch0001: 0001-init_virtio_scsi-reset-the-HBA-before-freeing-its-vi.patch
-
-# Fix freebsd problem
-Patch0002: vgabios-attempt-to-detect-old-x86emu-and-force-a-fault.diff
 
 BuildRequires: python iasl
 BuildRequires: binutils-x86_64-linux-gnu gcc-x86_64-linux-gnu
@@ -76,11 +70,6 @@ SeaVGABIOS is an open-source VGABIOS implementation.
 
 %prep
 %setup -q
-
-# Fix kvm migration with empty virtio-scsi controller (bz #1032208)
-%patch0001 -p1
-# Fix running freebsd (https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=737142)
-%patch0002 -p1
 
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
@@ -148,6 +137,15 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Sat May 31 2014 Cole Robinson <crobinso@redhat.com> - 1.7.5-1
+- Rebased to version 1.7.5
+- Support for obtaining SMBIOS tables directly from QEMU.
+- XHCI USB controller fixes for real hardware
+- seavgabios: New driver for "coreboot native vga" support
+- seavgabios: Improved detection of x86emu versions with incorrect
+  emulation.
+- Several bug fixes and code cleanups
+
 * Wed Mar 26 2014 Matthias Clasen <mclasen@redhat.com> 1.7.4-5
 - Fix booting FreeBSD VMs in virt-manager
 

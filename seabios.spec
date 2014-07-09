@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        1.7.5
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -18,6 +18,9 @@ Source15:       config.csm
 Source16:       config.coreboot
 Source17:       config.seabios-128k
 Source18:       config.seabios-256k
+
+# Fix PCI-e hotplug (bz #1115598)
+Patch0001: 0001-hw-pci-reserve-IO-and-mem-for-pci-express-downstream.patch
 
 BuildRequires: python iasl
 BuildRequires: binutils-x86_64-linux-gnu gcc-x86_64-linux-gnu
@@ -70,6 +73,9 @@ SeaVGABIOS is an open-source VGABIOS implementation.
 
 %prep
 %setup -q
+
+# Fix PCI-e hotplug (bz #1115598)
+%patch0001 -p1
 
 # Makefile changes version to include date and buildhost
 sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
@@ -137,6 +143,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Wed Jul 09 2014 Cole Robinson <crobinso@redhat.com> - 1.7.5-3
+- Fix PCI-e hotplug (bz #1115598)
+
 * Sun Jun 08 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.7.5-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
 

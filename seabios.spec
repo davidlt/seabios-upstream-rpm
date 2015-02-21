@@ -1,5 +1,5 @@
 Name:           seabios
-Version:        1.7.5.1
+Version:        1.8.0
 Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
@@ -123,7 +123,7 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %files
-%doc COPYING COPYING.LESSER README TODO
+%doc COPYING COPYING.LESSER README
 
 
 %files bin
@@ -137,6 +137,14 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Sat Feb 21 2015 Cole Robinson <crobinso@redhat.com> - 1.8.0-1
+- Rebased to version 1.8.0
+- Initial support for USB3 hubs
+- Initial support for SD cards (on QEMU only)
+- Initial support for transitioning to 32bit mode using SMIs (on QEMU TCG
+  only)
+- SeaVGABIOS improvements
+
 * Sat Nov 15 2014 Cole Robinson <crobinso@redhat.com> - 1.7.5.1-1
 - Update to seabios-1.7.5.1
 

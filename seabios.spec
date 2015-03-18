@@ -1,5 +1,5 @@
 Name:           seabios
-Version:        1.8.0
+Version:        1.8.1
 Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
@@ -137,6 +137,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Wed Mar 18 2015 Cole Robinson <crobinso@redhat.com> - 1.8.1-1
+- Rebased to version 1.8.1
+
 * Sat Feb 21 2015 Cole Robinson <crobinso@redhat.com> - 1.8.0-1
 - Rebased to version 1.8.0
 - Initial support for USB3 hubs

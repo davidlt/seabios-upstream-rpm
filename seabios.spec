@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        1.8.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -137,6 +137,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
 * Wed Mar 18 2015 Cole Robinson <crobinso@redhat.com> - 1.8.1-1
 - Rebased to version 1.8.1
 

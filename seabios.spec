@@ -1,6 +1,6 @@
 Name:           seabios
-Version:        1.8.1
-Release:        2%{?dist}
+Version:        1.8.2
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -18,6 +18,7 @@ Source15:       config.csm
 Source16:       config.coreboot
 Source17:       config.seabios-128k
 Source18:       config.seabios-256k
+Source19:       config.vga.virtio
 
 BuildRequires: python iasl
 BuildRequires: binutils-x86_64-linux-gnu gcc-x86_64-linux-gnu
@@ -98,16 +99,16 @@ build_bios() {
 }
 
 # seabios
-build_bios %{SOURCE15} Csm16.bin bios-csm.bin
-build_bios %{SOURCE16} bios.bin.elf bios-coreboot.bin
-build_bios %{SOURCE17} bios.bin bios.bin
-build_bios %{SOURCE18} bios.bin bios-256k.bin
+build_bios %{_sourcedir}/config.csm Csm16.bin bios-csm.bin
+build_bios %{_sourcedir}/config.coreboot bios.bin.elf bios-coreboot.bin
+build_bios %{_sourcedir}/config.seabios-128k bios.bin bios.bin
+build_bios %{_sourcedir}/config.seabios-256k bios.bin bios-256k.bin
 cp out/src/fw/*dsdt*.aml binaries
 
 # seavgabios
-for config in %{SOURCE10} %{SOURCE11} %{SOURCE12} %{SOURCE13} %{SOURCE14}; do
+for config in config.vga.cirrus config.vga.isavga config.vga.qxl config.vga.stdvga config.vga.cirrus config.vga.vmware config.vga.virtio; do
     name=${config#*config.vga.}
-    build_bios ${config} vgabios.bin vgabios-${name}.bin out/vgabios.bin
+    build_bios %{_sourcedir}/${config} vgabios.bin vgabios-${name}.bin out/vgabios.bin
 done
 
 
@@ -137,6 +138,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Tue Jul 14 2015 Cole Robinson <crobinso@redhat.com> 1.8.2-1
+- Rebased to version 1.8.2
+
 * Fri Jun 19 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1.8.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
 

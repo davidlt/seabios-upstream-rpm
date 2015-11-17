@@ -1,5 +1,5 @@
 Name:           seabios
-Version:        1.8.2
+Version:        1.9.0
 Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
@@ -72,9 +72,6 @@ SeaVGABIOS is an open-source VGABIOS implementation.
 %prep
 %setup -q
 
-# Makefile changes version to include date and buildhost
-sed -i 's,VERSION=%{version}.*,VERSION=%{version},g' Makefile
-
 
 %build
 export CFLAGS="$RPM_OPT_FLAGS"
@@ -87,6 +84,7 @@ build_bios() {
     make oldnoconfig V=1
 
     make V=1 \
+        EXTRAVERSION="-%{release}" \
         HOSTCC=gcc \
         CC=x86_64-linux-gnu-gcc \
         AS=x86_64-linux-gnu-as \
@@ -99,10 +97,10 @@ build_bios() {
 }
 
 # seabios
-build_bios %{_sourcedir}/config.csm Csm16.bin bios-csm.bin
-build_bios %{_sourcedir}/config.coreboot bios.bin.elf bios-coreboot.bin
 build_bios %{_sourcedir}/config.seabios-128k bios.bin bios.bin
 build_bios %{_sourcedir}/config.seabios-256k bios.bin bios-256k.bin
+build_bios %{_sourcedir}/config.csm Csm16.bin bios-csm.bin
+build_bios %{_sourcedir}/config.coreboot bios.bin.elf bios-coreboot.bin
 cp out/src/fw/*dsdt*.aml binaries
 
 # seavgabios
@@ -138,6 +136,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Tue Nov 17 2015 Cole Robinson <crobinso@redhat.com> 1.9.0-1
+- Rebased to version 1.9.0
+
 * Tue Jul 14 2015 Cole Robinson <crobinso@redhat.com> 1.8.2-1
 - Rebased to version 1.8.2
 

@@ -104,9 +104,10 @@ build_bios %{_sourcedir}/config.coreboot bios.bin.elf bios-coreboot.bin
 cp out/src/fw/*dsdt*.aml binaries
 
 # seavgabios
-for config in config.vga.cirrus config.vga.isavga config.vga.qxl config.vga.stdvga config.vga.cirrus config.vga.vmware config.vga.virtio; do
-    name=${config#*config.vga.}
-    build_bios %{_sourcedir}/${config} vgabios.bin vgabios-${name}.bin out/vgabios.bin
+%global vgaconfigs cirrus isavga qxl stdvga vmware virtio
+for config in %{vgaconfigs}; do
+    build_bios %{_sourcedir}/config.vga.${config} \
+               vgabios.bin vgabios-${config}.bin out/vgabios.bin
 done
 
 

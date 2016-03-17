@@ -1,6 +1,6 @@
 Name:           seabios
-Version:        1.9.0
-Release:        2%{?dist}
+Version:        1.9.1
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -137,6 +137,10 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Thu Mar 17 2016 Cole Robinson <crobinso@redhat.com> - 1.9.1-1
+- Rebased to version 1.9.1
+- Fix incorrect UUID format in boot output (bz #1284259)
+
 * Thu Feb 04 2016 Fedora Release Engineering <releng@fedoraproject.org> - 1.9.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 

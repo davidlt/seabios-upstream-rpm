@@ -1,6 +1,6 @@
 Name:           seabios
 Version:        1.9.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -139,9 +139,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
-* Thu Mar 24 2016 Paolo Bonzini <pbonzini@redhat.com> - 1.9.1-2
+* Thu Mar 24 2016 Paolo Bonzini <pbonzini@redhat.com> - 1.9.1-3
 - Include MPT Fusion driver, in preparation for QEMU 2.6
-- Include XHCI and UAS drivers in 128k ROM, sacrifice bootsplash instead
+- Include XHCI and SD in 128k ROM, sacrifice bootsplash instead
 
 * Thu Mar 17 2016 Cole Robinson <crobinso@redhat.com> - 1.9.1-1
 - Rebased to version 1.9.1

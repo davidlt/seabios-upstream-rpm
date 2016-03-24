@@ -8,8 +8,9 @@ CONFIG_FLASH_FLOPPY=n
 CONFIG_USB_OHCI=n
 CONFIG_TCGBIOS=n
 
-# Right now all drivers fit in the ROM, but these could
+CONFIG_USB_UAS=n
+
+# Right now all other drivers fit in the ROM, but these could
 # easily go...
 #CONFIG_ESP_SCSI=n
-#CONFIG_USB_UAS=n
 #CONFIG_SDCARD=n

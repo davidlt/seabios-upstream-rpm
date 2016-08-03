@@ -1,6 +1,6 @@
 Name:           seabios
-Version:        1.9.1
-Release:        3%{?dist}
+Version:        1.9.3
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -8,7 +8,6 @@ License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
 
 Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
-Patch1:         0001-Support-for-booting-from-LSI-Logic-LSI53C1030-SAS106.patch
 
 Source10:       config.vga.cirrus
 Source11:       config.vga.isavga
@@ -72,7 +71,6 @@ SeaVGABIOS is an open-source VGABIOS implementation.
 
 %prep
 %setup -q
-%patch1 -p1
 
 
 %build
@@ -139,6 +137,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Wed Aug 03 2016 Cole Robinson <crobinso@redhat.com> - 1.9.3-1
+- Rebased to version 1.9.3
+
 * Thu Mar 24 2016 Paolo Bonzini <pbonzini@redhat.com> - 1.9.1-3
 - Include MPT Fusion driver, in preparation for QEMU 2.6
 - Include XHCI and SD in 128k ROM, sacrifice bootsplash instead

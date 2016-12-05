@@ -1,5 +1,5 @@
 Name:           seabios
-Version:        1.9.3
+Version:        1.10.1
 Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
@@ -101,7 +101,6 @@ build_bios %{_sourcedir}/config.seabios-128k bios.bin bios.bin
 build_bios %{_sourcedir}/config.seabios-256k bios.bin bios-256k.bin
 build_bios %{_sourcedir}/config.csm Csm16.bin bios-csm.bin
 build_bios %{_sourcedir}/config.coreboot bios.bin.elf bios-coreboot.bin
-cp out/src/fw/*dsdt*.aml binaries
 
 # seavgabios
 %global vgaconfigs cirrus isavga qxl stdvga vmware virtio
@@ -118,7 +117,6 @@ install -m 0644 binaries/bios.bin $RPM_BUILD_ROOT%{_datadir}/seabios/bios.bin
 install -m 0644 binaries/bios-256k.bin $RPM_BUILD_ROOT%{_datadir}/seabios/bios-256k.bin
 install -m 0644 binaries/bios-csm.bin $RPM_BUILD_ROOT%{_datadir}/seabios/bios-csm.bin
 install -m 0644 binaries/bios-coreboot.bin $RPM_BUILD_ROOT%{_datadir}/seabios/bios-coreboot.bin
-install -m 0644 binaries/*.aml $RPM_BUILD_ROOT%{_datadir}/seabios
 install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
@@ -129,7 +127,6 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 %files bin
 %dir %{_datadir}/seabios/
 %{_datadir}/seabios/bios*.bin
-%{_datadir}/seabios/*.aml
 
 %files -n seavgabios-bin
 %dir %{_datadir}/seavgabios/
@@ -137,6 +134,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Sun Dec 04 2016 Cole Robinson <crobinso@redhat.com> - 1.10.1-1
+- Rebased to version 1.10.1
+
 * Wed Aug 03 2016 Cole Robinson <crobinso@redhat.com> - 1.9.3-1
 - Rebased to version 1.9.3
 

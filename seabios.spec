@@ -1,6 +1,6 @@
 Name:           seabios
-Version:        1.10.1
-Release:        2%{?dist}
+Version:        1.10.2
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -134,6 +134,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Wed Mar 15 2017 Cole Robinson <crobinso@redhat.com> - 1.10.2-1
+- Rebased to version 1.10.2
+
 * Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.10.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 

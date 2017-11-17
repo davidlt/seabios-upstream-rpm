@@ -1,6 +1,10 @@
+%if 0%{?fedora:1}
+%define cross 1
+%endif
+
 Name:           seabios
 Version:        1.10.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -21,11 +25,15 @@ Source18:       config.seabios-256k
 Source19:       config.vga.virtio
 
 BuildRequires: python iasl
+%if 0%{?cross:1}
 BuildRequires: binutils-x86_64-linux-gnu gcc-x86_64-linux-gnu
+Buildarch:     noarch
+%else
+ExclusiveArch: x86_64
+%endif
 
 Requires: %{name}-bin = %{version}-%{release}
 Requires: seavgabios-bin = %{version}-%{release}
-Buildarch: noarch
 
 # Seabios is noarch, but required on architectures which cannot build it.
 # Disable debuginfo because it is of no use to us.
@@ -85,13 +93,16 @@ build_bios() {
 
     make V=1 \
         EXTRAVERSION="-%{release}" \
+%if 0%{?cross:1}
         HOSTCC=gcc \
         CC=x86_64-linux-gnu-gcc \
         AS=x86_64-linux-gnu-as \
         LD=x86_64-linux-gnu-ld \
         OBJCOPY=x86_64-linux-gnu-objcopy \
         OBJDUMP=x86_64-linux-gnu-objdump \
-        STRIP=x86_64-linux-gnu-strip $4
+        STRIP=x86_64-linux-gnu-strip \
+%endif
+        $4
 
     cp out/$2 binaries/$3
 }
@@ -99,8 +110,10 @@ build_bios() {
 # seabios
 build_bios %{_sourcedir}/config.seabios-128k bios.bin bios.bin
 build_bios %{_sourcedir}/config.seabios-256k bios.bin bios-256k.bin
+%if 0%{?fedora:1}
 build_bios %{_sourcedir}/config.csm Csm16.bin bios-csm.bin
 build_bios %{_sourcedir}/config.coreboot bios.bin.elf bios-coreboot.bin
+%endif
 
 # seavgabios
 %global vgaconfigs cirrus isavga qxl stdvga vmware virtio
@@ -115,8 +128,10 @@ mkdir -p $RPM_BUILD_ROOT%{_datadir}/seabios
 mkdir -p $RPM_BUILD_ROOT%{_datadir}/seavgabios
 install -m 0644 binaries/bios.bin $RPM_BUILD_ROOT%{_datadir}/seabios/bios.bin
 install -m 0644 binaries/bios-256k.bin $RPM_BUILD_ROOT%{_datadir}/seabios/bios-256k.bin
+%if 0%{?fedora:1}
 install -m 0644 binaries/bios-csm.bin $RPM_BUILD_ROOT%{_datadir}/seabios/bios-csm.bin
 install -m 0644 binaries/bios-coreboot.bin $RPM_BUILD_ROOT%{_datadir}/seabios/bios-coreboot.bin
+%endif
 install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
@@ -134,6 +149,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Fri Nov 17 2017 Paolo Bonzini <pbonzini@redhat.com> - 1.10.2-3
+- Disable cross-compilation on RHEL
+
 * Thu Jul 27 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1.10.2-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Mass_Rebuild
 

@@ -4,7 +4,7 @@
 
 Name:           seabios
 Version:        1.11.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -152,6 +152,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.11.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Fri Nov 17 2017 Paolo Bonzini <pbonzini@redhat.com> - 1.11.0-1
 - Rebased to version 1.11.0
 - Add three patches from RHEL

@@ -4,7 +4,7 @@
 
 Name:           seabios
 Version:        1.11.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
@@ -13,6 +13,7 @@ URL:            http://www.coreboot.org/SeaBIOS
 
 Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
 
+Patch0000:      python3.patch
 Patch0001:      0001-Workaround-for-a-win8.1-32-S4-resume-bug.patch
 Patch0002:      0002-reserve-more-memory-on-fseg.patch
 Patch0003:      0003-vgabios-Reorder-video-modes-to-work-around-a-Windows.patch
@@ -154,6 +155,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Sun Jul 15 2018 Paolo Bonzini <pbonzini@redhat.com> - 1.11.1-2
+- Build with Python 3
+
 * Thu Mar 22 2018 Cole Robinson <crobinso@redhat.com> - 1.11.1-1
 - Rebased to version 1.11.1
 

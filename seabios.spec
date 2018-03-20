@@ -12,6 +12,7 @@ License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
 
 Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
+Patch0001:      python3.patch
 Patch0004:      0004-Workaround-for-a-win8.1-32-S4-resume-bug.patch
 Patch0005:      0005-reserve-more-memory-on-fseg.patch
 Patch0006:      0006-vgabios-Reorder-video-modes-to-work-around-a-Windows.patch
@@ -27,7 +28,7 @@ Source17:       config.seabios-128k
 Source18:       config.seabios-256k
 Source19:       config.vga.virtio
 
-BuildRequires: python iasl
+BuildRequires: python3 iasl
 %if 0%{?cross:1}
 BuildRequires: binutils-x86_64-linux-gnu gcc-x86_64-linux-gnu
 Buildarch:     noarch
@@ -96,6 +97,7 @@ build_bios() {
 
     make V=1 \
         EXTRAVERSION="-%{release}" \
+        PYTHON=python3 \
 %if 0%{?cross:1}
         HOSTCC=gcc \
         CC=x86_64-linux-gnu-gcc \
@@ -152,6 +154,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Mon Mar 19 2018 Paolo Bonzini <pbonzini@redhat.com> - 1.11.0-2
+- Build with Python 3
+
 * Fri Feb 09 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.11.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 

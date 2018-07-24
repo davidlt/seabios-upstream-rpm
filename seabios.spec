@@ -3,15 +3,19 @@
 %endif
 
 Name:           seabios
-Version:        1.11.1
-Release:        2%{?dist}
+Version:        1.11.2
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 Group:          Applications/Emulators
 License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
 
-Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
+# Generated with:
+# git archive --prefix seabios-1.11.2/ --output seabios-1.11.2.tar.gz \
+#    rel-1.11.2
+#Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
+Source0: seabios-%{version}.tar.gz
 
 Patch0001:      0001-Workaround-for-a-win8.1-32-S4-resume-bug.patch
 Patch0002:      0002-reserve-more-memory-on-fseg.patch
@@ -28,6 +32,7 @@ Source17:       config.seabios-128k
 Source18:       config.seabios-256k
 Source19:       config.vga.virtio
 
+BuildRequires: gcc
 BuildRequires: python3 iasl
 %if 0%{?cross:1}
 BuildRequires: binutils-x86_64-linux-gnu gcc-x86_64-linux-gnu
@@ -154,6 +159,10 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Tue Jul 24 2018 Cole Robinson <crobinso@redhat.com> - 1.11.2-1
+- Rebased to version 1.11.2
+- Add BuildRequires: gcc (bz #1606326)
+
 * Sat Jul 14 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1.11.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 

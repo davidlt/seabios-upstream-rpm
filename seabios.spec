@@ -3,7 +3,7 @@
 %endif
 
 Name:           seabios
-Version:        1.11.2
+Version:        1.12.0
 Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
@@ -11,11 +11,7 @@ Group:          Applications/Emulators
 License:        LGPLv3
 URL:            http://www.coreboot.org/SeaBIOS
 
-# Generated with:
-# git archive --prefix seabios-1.11.2/ --output seabios-1.11.2.tar.gz \
-#    rel-1.11.2
-#Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
-Source0: seabios-%{version}.tar.gz
+Source0:        http://code.coreboot.org/p/seabios/downloads/get/%{name}-%{version}.tar.gz
 
 Patch0001:      0001-Workaround-for-a-win8.1-32-S4-resume-bug.patch
 Patch0002:      0002-reserve-more-memory-on-fseg.patch
@@ -159,6 +155,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Sat Nov 17 2018 Cole Robinson <crobinso@redhat.com> - 1.12.0-1
+- Rebase to version 1.12.0 for qemu-3.1.0
+
 * Tue Jul 24 2018 Cole Robinson <crobinso@redhat.com> - 1.11.2-1
 - Rebased to version 1.11.2
 - Add BuildRequires: gcc (bz #1606326)

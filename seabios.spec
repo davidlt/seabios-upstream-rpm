@@ -4,7 +4,7 @@
 
 Name:           seabios
 Version:        1.12.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 License:        LGPLv3
@@ -154,6 +154,9 @@ install -m 0644 binaries/vgabios*.bin $RPM_BUILD_ROOT%{_datadir}/seavgabios
 
 
 %changelog
+* Sat Feb 02 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1.12.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Sat Nov 17 2018 Cole Robinson <crobinso@redhat.com> - 1.12.0-1
 - Rebase to version 1.12.0 for qemu-3.1.0
 

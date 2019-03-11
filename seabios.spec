@@ -3,8 +3,8 @@
 %endif
 
 Name:           seabios
-Version:        1.12.0
-Release:        2%{?dist}
+Version:        @SEABIOS_VERSION@
+Release:        1%{?dist}
 Summary:        Open-source legacy BIOS implementation
 
 License:        LGPLv3
@@ -26,6 +26,8 @@ Source16:       config.coreboot
 Source17:       config.seabios-128k
 Source18:       config.seabios-256k
 Source19:       config.vga.virtio
+Source20:       config.vga.bochs-display
+Source21:       config.vga.ramfb
 
 BuildRequires: gcc
 BuildRequires: python3 iasl
@@ -121,7 +123,7 @@ build_bios %{_sourcedir}/config.coreboot bios.bin.elf bios-coreboot.bin
 %endif
 
 # seavgabios
-%global vgaconfigs cirrus isavga qxl stdvga vmware virtio
+%global vgaconfigs cirrus isavga qxl stdvga vmware virtio bochs-display ramfb
 for config in %{vgaconfigs}; do
     build_bios %{_sourcedir}/config.vga.${config} \
                vgabios.bin vgabios-${config}.bin out/vgabios.bin

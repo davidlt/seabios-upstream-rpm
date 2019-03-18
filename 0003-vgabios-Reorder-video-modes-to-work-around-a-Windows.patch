@@ -1,50 +1,11 @@
-From 4d08ebd4f8dc19dfc36495473b34c34d53650632 Mon Sep 17 00:00:00 2001
-From: Ladi Prosek <lprosek@redhat.com>
-Date: Mon, 31 Oct 2016 19:33:05 +0100
-Subject: vgabios: Reorder video modes to work around a Windows bug
-
-RH-Author: Ladi Prosek <lprosek@redhat.com>
-Message-id: <1477924385-6169-1-git-send-email-lprosek@redhat.com>
-Patchwork-id: 72677
-O-Subject: [RHEL-7.4/7.3.z seabios PATCH] vgabios: Reorder video modes to work around a Windows bug
-Bugzilla: 1392028
-RH-Acked-by: Laszlo Ersek <lersek@redhat.com>
-RH-Acked-by: Gerd Hoffmann <kraxel@redhat.com>
-RH-Acked-by: vrozenfe <vrozenfe@redhat.com>
-
-Windows Server 2016 and Windows 10 RS1 come with a bug in its blue screen
-of death rendering logic which prevents it from generating crash dumps.
-
-The bug does not manifest if Windows sees a suitable 32 bpp video mode
-before a suitable 24 bpp video mode in the list of modes returned from
-vgabios. This commit moves all 32 bpp modes to the front of the list to
-make sure that this is always the case.
-
-Upstream patch:
-https://www.coreboot.org/pipermail/seabios/2016-October/010963.html
-
-There are valid concerns upstream about the breaking nature of the fix
-but for the limited set of operating systems supported by RHEL/RHEV we
-can easily verify that they are unaffected. So as things stand now, this
-is a downstream-only patch which will be reverted in the near future;
-the exact time will depend on Windows 10 RS2 schedule and other factors.
-The goal is to make sure that our customers running Windows 10 VMs can
-generate crash dumps.
-
-Signed-off-by: Ladi Prosek <lprosek@redhat.com>
-Signed-off-by: Miroslav Rezanina <mrezanin@redhat.com>
----
- vgasrc/bochsvga.c | 39 ++++++++++++++++++++-------------------
- 1 file changed, 20 insertions(+), 19 deletions(-)
-
-diff --git a/vgasrc/bochsvga.c b/vgasrc/bochsvga.c
-index ec5d101..c5d1511 100644
---- a/vgasrc/bochsvga.c
-+++ b/vgasrc/bochsvga.c
-@@ -28,6 +28,25 @@ static struct bochsvga_mode
-     u16 mode;
-     struct vgamode_s info;
- } bochsvga_modes[] VAR16 = {
+diff --git a/vgasrc/svgamodes.c b/vgasrc/svgamodes.c
+index 013504c..a6bf884 100644
+--- a/vgasrc/svgamodes.c
++++ b/vgasrc/svgamodes.c
+@@ -4,6 +4,25 @@
+ #include "svgamodes.h"
+ 
+ struct generic_svga_mode svga_modes[] VAR16 = {
 +    /* 32 bpp BOCHS modes */
 +    { 0x140, { MM_DIRECT, 320,  200,  32, 8, 16, SEG_GRAPH } },
 +    { 0x141, { MM_DIRECT, 640,  400,  32, 8, 16, SEG_GRAPH } },
@@ -67,11 +28,11 @@ index ec5d101..c5d1511 100644
      /* standard modes */
      { 0x100, { MM_PACKED, 640,  400,  8,  8, 16, SEG_GRAPH } },
      { 0x101, { MM_PACKED, 640,  480,  8,  8, 16, SEG_GRAPH } },
-@@ -56,50 +75,32 @@ static struct bochsvga_mode
+@@ -32,49 +51,31 @@ struct generic_svga_mode svga_modes[] VAR16 = {
      { 0x11D, { MM_DIRECT, 1600, 1200, 15, 8, 16, SEG_GRAPH } },
      { 0x11E, { MM_DIRECT, 1600, 1200, 16, 8, 16, SEG_GRAPH } },
      { 0x11F, { MM_DIRECT, 1600, 1200, 24, 8, 16, SEG_GRAPH } },
--    /* BOCHS modes */
+-    /* other modes */
 -    { 0x140, { MM_DIRECT, 320,  200,  32, 8, 16, SEG_GRAPH } },
 -    { 0x141, { MM_DIRECT, 640,  400,  32, 8, 16, SEG_GRAPH } },
 -    { 0x142, { MM_DIRECT, 640,  480,  32, 8, 16, SEG_GRAPH } },
@@ -117,8 +78,4 @@ index ec5d101..c5d1511 100644
      { 0x191, { MM_DIRECT, 1920, 1080, 24, 8, 16, SEG_GRAPH } },
 -    { 0x192, { MM_DIRECT, 1920, 1080, 32, 8, 16, SEG_GRAPH } },
  };
- 
- static int dispi_found VAR16 = 0;
--- 
-1.8.3.1
-
+ unsigned int svga_mcount VAR16 = ARRAY_SIZE(svga_modes);
